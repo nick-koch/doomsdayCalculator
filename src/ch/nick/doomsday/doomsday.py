@@ -2,36 +2,35 @@
 The formula and other information can be found on: https://www.timeanddate.com/date/doomsday-weekday.html
 """
 
-import datetime
+import datetime  # datetime is just used to compare date objects and not to get the weekday
+
 
 class Main(object):
-
-    #Variables and Constants
-    day = 17
-    month = 4
-    year = 2003
-    inputDate = datetime.datetime(year, month, day)
-    strInputDate = str(str(day) + "." + str(month) + "." + str(year))
-
-    weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    anchordays = [[1800, 1900, 2000, 2100], [5, 3, 2, 0]] #[[centurys],[weekdays]]
-    universalDoomsday = datetime.datetime(year, 6, 6) #see: https://www.timeanddate.com/date/doomsday-rule.html
-
     def main(self):
+        date = Display().askForDate()
+        splitted_date = date.split(".")
+        day = int(splitted_date[0])
+        month = int(splitted_date[1])
+        year = int(splitted_date[2])
+        year_string = splitted_date[2]
+        input_date = datetime.datetime(year, month, day)
+        universal_doomsday = datetime.datetime(year, 6, 6)  # see: https://www.timeanddate.com/date/doomsday-rule.html
 
-        Display().askForDate()
+        anchorday_of_the_century = Doomsday().getTheCenturysAnchorday(year_string)
 
-        doomsday_of_the_year, rest_of_calculation = (Doomsday().getTheDoomsdayOfYear(self.year, self.anchordays, self.weekdays))
-        raw_index_number_of_day = Doomsday().doomsdayOfYearToDate(self.inputDate, self.universalDoomsday, self.strInputDate, doomsday_of_the_year, rest_of_calculation)
-        weekday = Doomsday().getTheWeekday(raw_index_number_of_day, self.weekdays)
-        print(weekday)
+        index_of_doomsday = (Doomsday().getTheDoomsdayOfYear(year_string, anchorday_of_the_century))
+
+        raw_index_number_of_day = Doomsday().doomsdayOfYearToDate(input_date, universal_doomsday, index_of_doomsday)
+
+        weekday = Doomsday().getTheWeekday(raw_index_number_of_day)
+
+        Display().printWeekday(weekday, date)
 
 
 class Doomsday(object):
-    def getTheDoomsdayOfYear(self, year, anchordays, weekdays):
+    def getTheDoomsdayOfYear(self, year, anchorday_of_the_century):
+
         # How many times does the number 12 fit as a whole into the two last digits of the year number?
-        global anchordayOfTheCentury
-        year = str(year)
         last_two_digits = (str(year)[len(year) - 2] + str(year)[len(year) - 1])
         last_two_digits_divided_by_twelve = int(int(last_two_digits) / 12)
 
@@ -42,21 +41,25 @@ class Doomsday(object):
         fit_in_number_four = int(difference_between_two_last_digits_and_multiple_of_twelve / 4)
 
         # What is the century's anchor day?
-        first_two_digits = str(year)[0] + str(year)[1]
-        century = first_two_digits + "00"
-
-        for centurys in range(len(anchordays[0])):
-            if str(anchordays[0][centurys]) == century:
-                anchordayOfTheCentury = anchordays[1][centurys]
+        # anchorday_of_the_century --> method call in main method to make testing easier
 
         # Add up all the results.
-        sum_of_all_results = (last_two_digits_divided_by_twelve + difference_between_two_last_digits_and_multiple_of_twelve + fit_in_number_four + anchordayOfTheCentury)
+        sum_of_all_results = (last_two_digits_divided_by_twelve + difference_between_two_last_digits_and_multiple_of_twelve + fit_in_number_four + anchorday_of_the_century)
 
         # Subtract whole multiples of 7 from the result of calculation 5. This will result in a number between 0 and 6, which corresponds to the doomsday of the year.
         rest_of_calculation = sum_of_all_results % 7
-        doomsday_of_the_year = weekdays[rest_of_calculation]
+        index_of_doomsday = rest_of_calculation
 
-        return doomsday_of_the_year, rest_of_calculation
+        return index_of_doomsday
+
+    def getTheCenturysAnchorday(self, year):
+        anchordays = [2, 0, 5, 3]
+
+        first_two_digits = year[0] + year[1]
+        modulo_four = int(first_two_digits) % 4
+        anchorday_of_the_century = anchordays[modulo_four]
+
+        return anchorday_of_the_century
 
     def is_number(self, s):
         try:
@@ -77,7 +80,7 @@ class Doomsday(object):
         int_number_of_days = int(strNumberOfDaysWithoutText)
         return int_number_of_days
 
-    def doomsdayOfYearToDate(self, input_date, universal_doomsday, str_input_date, doomsday_of_the_year, rest_of_calculation):
+    def doomsdayOfYearToDate(self, input_date, universal_doomsday, index_of_doomsday):
         # Move from the doomsday to the date in question.
         if input_date <= universal_doomsday:
             str_number_of_days = str(universal_doomsday - input_date)
@@ -85,7 +88,7 @@ class Doomsday(object):
 
             rest_of_division_by_seven = int_number_of_days % 7
 
-            raw_index_number_of_day = rest_of_calculation - rest_of_division_by_seven
+            raw_index_number_of_day = index_of_doomsday - rest_of_division_by_seven
 
             return raw_index_number_of_day
 
@@ -95,14 +98,18 @@ class Doomsday(object):
 
             rest_of_division_by_seven = int_number_of_days % 7
 
-            raw_index_number_of_day = rest_of_calculation + rest_of_division_by_seven
+            raw_index_number_of_day = index_of_doomsday + rest_of_division_by_seven
 
             return raw_index_number_of_day
 
-    def getTheWeekday(self, raw_index_number_of_day, weekdays):
+    def getTheWeekday(self, raw_index_number_of_day):
+
+        weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
         if raw_index_number_of_day < 0:
             index_number_of_day = raw_index_number_of_day + 7
+        elif raw_index_number_of_day > 6:
+            index_number_of_day = raw_index_number_of_day - 7
         else:
             index_number_of_day = raw_index_number_of_day
 
@@ -111,6 +118,17 @@ class Doomsday(object):
         return weekday_of_user_input
 
 
+class Display(object):
+    def askForDate(self):
+        user_input = input("Please enter a date (DD.MM.YYYY):")
+        try:
+            datetime.datetime.strptime(user_input, '%d.%m.%Y')
+        except:
+            Display().askForDate()
+        return user_input
+
+    def printWeekday(self, weekday, date):
+        print("The", date, "was/is a", weekday)
 
 
 if __name__ == '__main__':
