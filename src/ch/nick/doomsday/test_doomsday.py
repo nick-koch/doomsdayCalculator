@@ -1,4 +1,5 @@
 import unittest
+import datetime
 from src.ch.nick.doomsday.doomsday import Doomsday
 
 class MyTest(unittest.TestCase):
@@ -106,6 +107,27 @@ class MyTest(unittest.TestCase):
         year = "5016"
         res = Doomsday.getTheDoomsdayOfYear(self, year, Doomsday.getTheCenturysAnchorday(self, year))
         self.assertEqual(res, 4)
+
+    def test_doomsdayOfYearToDate(self):
+        day = 11
+        month = 2
+        year = 1978
+        input_date = datetime.datetime(year, month, day)
+        universal_doomsday = datetime.datetime(int(year), 6, 6)  # see: https://www.timeanddate.com/date/doomsday-rule.html
+        index_of_doomsday = 2
+        res = Doomsday.doomsdayOfYearToDate(self, input_date, universal_doomsday, index_of_doomsday)
+        self.assertEqual(-1, res) #6 or -1
+
+        day = 8
+        month = 5
+        year = 2001
+        input_date = datetime.datetime(year, month, day)
+        universal_doomsday = datetime.datetime(int(year), 6, 6)  # see: https://www.timeanddate.com/date/doomsday-rule.html
+        index_of_doomsday = 3
+        res = Doomsday.doomsdayOfYearToDate(self, input_date, universal_doomsday, index_of_doomsday)
+        self.assertEqual(2, res)
+
+
 
 if __name__ == '__main__':
     unittest.main()
