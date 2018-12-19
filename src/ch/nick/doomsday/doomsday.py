@@ -61,30 +61,12 @@ class Doomsday(object):
 
         return anchorday_of_the_century
 
-    def is_number(self, s):
-        try:
-            float(s)
-            return True
-        except ValueError:
-            return False
-
-    def getIntNumberOfDays(self, str_number_of_days):
-        global strNumberOfDaysWithoutText
-        if self.is_number(str_number_of_days[0]):
-            strNumberOfDaysWithoutText = str_number_of_days[0]
-            if self.is_number(str_number_of_days[1]):
-                strNumberOfDaysWithoutText += str_number_of_days[1]
-                if self.is_number(str_number_of_days[2]):
-                    strNumberOfDaysWithoutText += str_number_of_days[2]
-
-        int_number_of_days = int(strNumberOfDaysWithoutText)
-        return int_number_of_days
 
     def doomsdayOfYearToDate(self, input_date, universal_doomsday, index_of_doomsday):
         # Move from the doomsday to the date in question.
         if input_date <= universal_doomsday:
             str_number_of_days = str(universal_doomsday - input_date)
-            int_number_of_days = self.getIntNumberOfDays(str_number_of_days)
+            int_number_of_days = int(str_number_of_days.split(" ")[0])
 
             rest_of_division_by_seven = int_number_of_days % 7
 
@@ -94,7 +76,7 @@ class Doomsday(object):
 
         elif input_date > universal_doomsday:
             str_number_of_days = str(input_date - universal_doomsday)
-            int_number_of_days = self.getIntNumberOfDays(str_number_of_days)
+            int_number_of_days = int(str_number_of_days.split(" ")[0])
 
             rest_of_division_by_seven = int_number_of_days % 7
 
