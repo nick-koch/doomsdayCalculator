@@ -58,6 +58,54 @@ class MyTest(unittest.TestCase):
         res = Doomsday.getTheCenturysAnchorday(self, "2300")
         self.assertEqual(res, 3)
 
+    def test_getTheDoomsdayOfYear(self):
+        year = "1978"
+        res = Doomsday.getTheDoomsdayOfYear(self, year, Doomsday.getTheCenturysAnchorday(self, year))
+        self.assertEqual(res, 2)
+
+        year = "2001"
+        res = Doomsday.getTheDoomsdayOfYear(self, year, Doomsday.getTheCenturysAnchorday(self, year))
+        self.assertEqual(res, 3)
+
+        year = "1291"
+        res = Doomsday.getTheDoomsdayOfYear(self, year, Doomsday.getTheCenturysAnchorday(self, year))
+        self.assertEqual(res, 3)
+
+        year = "0045"
+        res = Doomsday.getTheDoomsdayOfYear(self, year, Doomsday.getTheCenturysAnchorday(self, year))
+        self.assertEqual(res, 2)
+
+        year = "7865"
+        res = Doomsday.getTheDoomsdayOfYear(self, year, Doomsday.getTheCenturysAnchorday(self, year))
+        self.assertEqual(res, 2)
+
+        year = "1578"
+        res = Doomsday.getTheDoomsdayOfYear(self, year, Doomsday.getTheCenturysAnchorday(self, year))
+        self.assertEqual(res, 2)
+
+        year = "2005"
+        res = Doomsday.getTheDoomsdayOfYear(self, year, Doomsday.getTheCenturysAnchorday(self, year))
+        self.assertEqual(res, 1)
+
+        year = "1972"
+        res = Doomsday.getTheDoomsdayOfYear(self, year, Doomsday.getTheCenturysAnchorday(self, year))
+        self.assertEqual(res, 2)
+
+        year = "1971"
+        res = Doomsday.getTheDoomsdayOfYear(self, year, Doomsday.getTheCenturysAnchorday(self, year))
+        self.assertEqual(res, 0)
+
+        year = "1925"
+        res = Doomsday.getTheDoomsdayOfYear(self, year, Doomsday.getTheCenturysAnchorday(self, year))
+        self.assertEqual(res, 6)
+
+        year = "1130"
+        res = Doomsday.getTheDoomsdayOfYear(self, year, Doomsday.getTheCenturysAnchorday(self, year))
+        self.assertEqual(res, 5)
+
+        year = "5016"
+        res = Doomsday.getTheDoomsdayOfYear(self, year, Doomsday.getTheCenturysAnchorday(self, year))
+        self.assertEqual(res, 4)
 
 if __name__ == '__main__':
     unittest.main()
